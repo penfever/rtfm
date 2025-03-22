@@ -2,7 +2,7 @@ from collections import defaultdict
 import logging
 import re
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Sequence, Tuple, Union, Callable, Any, Literal, Callable
 
 from xgboost import XGBClassifier
@@ -169,9 +169,13 @@ class NoTargetCandidatesError(ValueError):
 class ModelBasedTargetSelector(TargetSelector):
     """Target selector that uses a model to select candidate columns."""
 
-    clf = None
-    summarizer: SingleColumnSummarizer = SingleColumnSummarizer(
-        agg_fns={}, agg_quantiles=[], include_table_summary_metrics=False
+    clf: Any = field(default=None)
+    summarizer: SingleColumnSummarizer = field(
+        default_factory=lambda: SingleColumnSummarizer(
+            agg_fns={}, 
+            agg_quantiles=[], 
+            include_table_summary_metrics=False
+        )
     )
 
     def __post_init__(self):
