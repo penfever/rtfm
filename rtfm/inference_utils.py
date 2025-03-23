@@ -150,13 +150,14 @@ def infer_on_example(
     # Shots is a list of dictionaries
     if is_fewshot:
         ds_train = tokenized_ds_dict["train"]
-        shots = list(
+        # Use slice notation instead of take()
+        selected_examples = list(
             ds_train.select_columns(["input_ids", "labels"])
             .with_format("torch")
-            .take(len(labeled_examples))
-        )
+        )[:len(labeled_examples)]
+        
         # Make shots a list of tuples
-        shots = [(x["input_ids"], x["labels"]) for x in shots]
+        shots = [(x["input_ids"], x["labels"]) for x in selected_examples]
     else:
         shots = None
 
@@ -164,7 +165,7 @@ def infer_on_example(
     # element in order to actually trigger the lazy-loading of the data.
     ds_test = tokenized_ds_dict["test"]
     target_sample = list(
-        ds_test.select_columns(["input_ids", "labels"]).with_format("torch").take(1)
+        ds_test.select_columns(["input_ids", "labels"]).with_format("torch")
     )[0]
 
     target_sample = (target_sample["input_ids"], target_sample["labels"])

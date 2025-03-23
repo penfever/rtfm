@@ -22,8 +22,11 @@ We do not currently support other (non-Llama) language models.
 We recommend use of the provided `conda` environment. You can set it up with:
 
 ```shell
-conda env create -f environment.yml
-pip install --no-deps git+https://github.com/mlfoundations/tableshift.git
+pip install uv && uv pip install -r requirements.txt
+uv pip install --no-deps git+https://github.com/mlfoundations/tableshift.git
+uv pip install git+https://github.com/jpgard/llama-recipes.git
+uv pip install git+https://github.com/penfever/tabliblib.git
+uv pip install -e .
 ```
 # Quickstart - Inference
 

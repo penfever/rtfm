@@ -1,5 +1,5 @@
 # llama-recipes
-torch>=2.0.1
+torch>=2.0.1,<=2.1.0
 accelerate
 appdirs
 loralib
@@ -19,8 +19,8 @@ gradio
 wandb
 # rtfm
 scikit-learn
-pandas
-numpy
+pandas>=1.3.5,<=1.5.3
+numpy<=1.26
 lightgbm
 xgboost
 xport
@@ -48,5 +48,5 @@ ucimlrepo
 tabpfn
 gradio
 setuptools==69.5.1
-catboost==1.1.1
+catboost
 nltk

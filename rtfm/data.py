@@ -254,17 +254,17 @@ def build_formatted_df_from_file(file, target_config: TargetConfig) -> pd.DataFr
 
 
 def prepare_hf_dataset_from_formatted_df(df, as_iterable: bool):
-    records = df.to_dict(orient="records")
-
-    def _gen():
-        for x in records:
-            yield x
-
     if as_iterable:
+        # For IterableDataset, use generator approach
+        records = df.to_dict(orient="records")
+        def _gen():
+            for x in records:
+                yield x
+        
         return datasets.IterableDataset.from_generator(_gen)
-
     else:
-        return datasets.Dataset.from_generator(_gen)
+        # For Dataset, use from_pandas directly
+        return datasets.Dataset.from_pandas(df)
 
 
 def load_uncached_hf_dataset(
