@@ -1,8 +1,7 @@
 import nltk
 nltk.download('punkt_tab')
 import os
-import logging
-import sys
+import time
 import pandas as pd
 import numpy as np
 from sklearn.datasets import fetch_openml
@@ -60,7 +59,10 @@ DATASETS = {
     'airlines': 42742
 }
 
+all_dataset_results = []
+
 for dataset_name, dataset_id in DATASETS.items():
+    start_time = time.time()
     print(f"\n{'='*50}\nFetching dataset: {dataset_name} (ID: {dataset_id})\n{'='*50}")
     
     # Fetch the dataset
@@ -81,7 +83,9 @@ for dataset_name, dataset_id in DATASETS.items():
 
     # Select 10 features at random
     X_train = X_train.sample(n=10, random_state=42, axis=1)
-    X_test = X_test[X_train.columns]
+    # Select 100 test examples at random
+    X_test = X_test[X_train.columns].sample(n=100, random_state=42, axis=0)
+    y_test = y_test.loc[X_test.index]
     
     # Create a subset of 8 examples as labeled examples
     labeled_indices = np.random.choice(X_train.shape[0], size=8, replace=False)
@@ -93,7 +97,6 @@ for dataset_name, dataset_id in DATASETS.items():
     # Initialize lists to store results and metrics
     all_results = []
     y_true = []
-    y_pred_proba = {}
     y_pred = []
     
     # Process each test example
@@ -128,6 +131,7 @@ for dataset_name, dataset_id in DATASETS.items():
             correct += 1
     accuracy = round(correct / total, 2)
     print(f"Accuracy: {accuracy}")
+    print(f"Took {time.time() - start_time:.2f} seconds to run inference on {total} examples")
         
     
     # Save results for this dataset
@@ -139,7 +143,8 @@ for dataset_name, dataset_id in DATASETS.items():
         'y_true': y_true,
         'y_pred': y_pred
     }
+    all_dataset_results.append(dataset_results)
 
-dataset_results_df = pd.DataFrame([dataset_results])
+dataset_results_df = pd.DataFrame(all_dataset_results)
 dataset_results_df.to_csv('dataset_results.csv', index=False)
 print("Results saved to 'dataset_results.csv'")
