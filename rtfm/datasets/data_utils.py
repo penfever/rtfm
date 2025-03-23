@@ -108,9 +108,9 @@ def cast_columns_to_json_serializable(df: pd.DataFrame) -> pd.DataFrame:
         elif df[c].dtype == "object":
             # Check if there are any bytes values in the column
             if not all(isinstance(x, str) for x in df[c]):
-                logging.warning(
-                    f"casting values of column {c} to JSON-serializable str"
-                )
+                # logging.warning(
+                #     f"casting values of column {c} to JSON-serializable str"
+                # )
                 # Convert bytes to strings, leave other types as is
                 try:
                     df[c] = df[c].apply(make_object_json_serializable)
