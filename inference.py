@@ -82,9 +82,9 @@ for dataset_name, dataset_id in DATASETS.items():
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
 
     # Select 10 features at random
-    X_train = X_train.sample(n=10, random_state=42, axis=1)
+    X_train = X_train.sample(n=min(10, len(X_train.columns)), random_state=42, axis=1)
     # Select 100 test examples at random
-    X_test = X_test[X_train.columns].sample(n=100, random_state=42, axis=0)
+    X_test = X_test[X_train.columns].sample(n=min(100, len(X_test)), random_state=42, axis=0)
     y_test = y_test.loc[X_test.index]
     
     # Create a subset of 8 examples as labeled examples
